@@ -5,9 +5,9 @@
 <br><br><br>
 ### 해결한 문제
 1.  **프로그래머스**
--  lv 1: 72
--  lv 2: 46
--  lv 3: 5
+-  lv1: 72
+-  lv2: 48
+-  lv3: 5
 2.  **SWEA**
 -  d1: 19
 -  d2: 23
@@ -15,4 +15,4 @@
 
 **Total**:  249
 <br><br><br>
-**가장 최근에 해결한 문제**: [기지국 설치](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv3/%EA%B8%B0%EC%A7%80%EA%B5%AD%20%EC%84%A4%EC%B9%98.py)
+**가장 최근에 해결한 문제**: [삼각 달팽이](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv2/%EC%82%BC%EA%B0%81%20%EB%8B%AC%ED%8C%BD%EC%9D%B4.py)
