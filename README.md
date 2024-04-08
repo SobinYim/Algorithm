@@ -13,6 +13,6 @@
 -  d2: 23
 -  d3: 84
 
-**Total**:  249
+**Total**:  251
 <br><br><br>
 **가장 최근에 해결한 문제**: [삼각 달팽이](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv2/%EC%82%BC%EA%B0%81%20%EB%8B%AC%ED%8C%BD%EC%9D%B4.py)
