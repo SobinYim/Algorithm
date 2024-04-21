@@ -25,9 +25,13 @@ def update_readme(lv,problem_name):
     except:
         print("Error: 파일을 읽어올 수 없음")
         return False
+    prev_problem=re.findall(r"\[(.+)\]",content)[0]
+    if prev_problem==problem_name:
+        print("이미 업데이트한 문제")
+        return False
     edited_content=change_num(rf"(?<=lv{lv}: )\d+(?=\n)",content)
     edited_content=change_num(r"(?<=Total\*\*:  )\d+(?=\n)",edited_content)
-    edited_content=re.sub(r"\[.+\]",f"[{problem_name}]",edited_content)
+    edited_content=edited_content.replace(prev_problem,problem_name)
     edited_content=re.sub(r"\(.+\)",url,edited_content)
     try:
         with open("./readme.md","w") as file:
