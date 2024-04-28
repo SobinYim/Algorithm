@@ -18,6 +18,10 @@ def change_num(regex,content):
 
 #README 파일 업데이트
 def update_readme(lv,problem_name):
+    confirm=input(f"업데이트하려는 문제가 lv{lv}, {problem_name} 문제가 맞나요?(y/n)")
+    if confirm.lower()!="y":
+        print("업데이트 취소됨")
+        return False
     url=f"(https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv{lv}/{quote(problem_name)}.py)"
     try:
         with open("./readme.md","r") as file:
