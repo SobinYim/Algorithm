@@ -5,7 +5,7 @@
 <br><br><br>
 ### 해결한 문제
 1.  **프로그래머스**
--  lv1: 78
+-  lv1: 81
 -  lv2: 49
 -  lv3: 7
 2.  **SWEA**
@@ -13,6 +13,6 @@
 -  d2: 23
 -  d3: 84
 
-**Total**:  260
+**Total**:  263
 <br><br><br>
-**가장 최근에 해결한 문제**: [개인정보 수집 유효기간](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv1/%EA%B0%9C%EC%9D%B8%EC%A0%95%EB%B3%B4%20%EC%88%98%EC%A7%91%20%EC%9C%A0%ED%9A%A8%EA%B8%B0%EA%B0%84.py)
+**가장 최근에 해결한 문제**: [공원 산책](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv1/%EA%B3%B5%EC%9B%90%20%EC%82%B0%EC%B1%85.py)
