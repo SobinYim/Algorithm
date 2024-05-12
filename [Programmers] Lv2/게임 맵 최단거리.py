@@ -42,8 +42,6 @@ def solution(maps):
                         return step
         visited.update(visit)
         visit=visit_this
-        if not visit:
-            break
     return -1
 
 '''
