@@ -108,9 +108,13 @@ def auto_update_readme():
     content=change_num(r"(?<=Total\*\*:  )\d+(?=\n)",content,sum(discrepancy_dict.values()))
     content=re.sub("\[.+\]",f"[{problem_name}]",content)
     content=re.sub(r"\(.+\)",url,content)
+    update_problem=f"Solved problems: programmers [[{'], ['.join(k.rstrip('.py') for k in update_dict.keys())}]]"
+    print(update_problem)
     try:
         with open("./readme.md","w") as file:
             file.write(content)
+        with open("./update_problem.txt","w") as file:
+            file.write(update_problem)
     except:
         print("Error: 파일을 저장하는 데 실패함")
         return False

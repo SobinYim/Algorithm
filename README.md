@@ -6,13 +6,13 @@
 ### 해결한 문제
 1.  **프로그래머스**
 -  lv1: 81
--  lv2: 49
+-  lv2: 52
 -  lv3: 7
 2.  **SWEA**
 -  d1: 19
 -  d2: 23
 -  d3: 84
 
-**Total**:  263
+**Total**:  266
 <br><br><br>
-**가장 최근에 해결한 문제**: [공원 산책](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv1/%EA%B3%B5%EC%9B%90%20%EC%82%B0%EC%B1%85.py)
+**가장 최근에 해결한 문제**: [게임 맵 최단거리](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv2/%EA%B2%8C%EC%9E%84%20%EB%A7%B5%20%EC%B5%9C%EB%8B%A8%EA%B1%B0%EB%A6%AC.py)
