@@ -15,4 +15,4 @@
 
 **Total**:  269
 <br><br><br>
-**가장 최근에 해결한 문제**: [정수 삼각형](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv3/%EC%A0%95%EC%88%98%20%EC%82%BC%EA%B0%81%ED%98%95.py)
+**가장 최근에 해결한 문제**: [정수 삼각형](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv2/%EC%A0%95%EC%88%98%20%EC%82%BC%EA%B0%81%ED%98%95)
