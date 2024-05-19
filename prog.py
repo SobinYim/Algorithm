@@ -1,4 +1,5 @@
 import re
+from itertools import product
 from os import listdir
 from os.path import join,getctime
 from urllib.parse import quote
@@ -101,12 +102,12 @@ def auto_update_readme():
             files[f]=getctime(join(f"./[Programmers] Lv{lv}",f))
         new_files=sorted(files.items(),key=lambda x:x[1],reverse=True)[:cnt]
         for f,t in new_files:
-            update_dict[f]=t
+            update_dict[f]=[lv,t]
         content=change_num(rf"(?<=lv{lv}: )\d+(?=\n)", content,cnt)
-    problem_name=sorted(update_dict.items(),key=lambda x:x[1],reverse=True)[0][0].rstrip(".py")
-    url=f"(https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv{lv}/{quote(problem_name)}.py)"
+    problem=sorted(update_dict.items(),key=lambda x:x[1][1],reverse=True)[0]
+    url=f"(https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv{problem[1][0]}/{quote(problem[0])})"
     content=change_num(r"(?<=Total\*\*:  )\d+(?=\n)",content,sum(discrepancy_dict.values()))
-    content=re.sub("\[.+\]",f"[{problem_name}]",content)
+    content=re.sub("\[.+\]",f"[{problem[0]}]",content)
     content=re.sub(r"\(.+\)",url,content)
     update_problem=f"Solved problems: programmers [[{'], ['.join(k.rstrip('.py') for k in update_dict.keys())}]]"
     print(update_problem)
