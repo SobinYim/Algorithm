@@ -1,18 +1,19 @@
 import re
-from itertools import product
+import subprocess
 from os import listdir
 from os.path import join,getctime
 from urllib.parse import quote
+from collections import defaultdict
 
 #실행 결과 요약
-def cal_res(r=2):
+def cal_res(r=2,eff=False):
     text=input().strip("\n")
     text=list(map(lambda x: list(map(lambda y: float(y[:-2]), x.split(", "))), re.findall(r"\((.*?)\)", text)))
     t, memory = zip(*text)
     l=len(t)
     mean_t=round(sum(t)/l,r)
     mean_m=round(sum(memory)/l,r)
-    print(f"평균 실행 시간 : {mean_t} 평균 메모리 사용량: {mean_m}")
+    print("[효율성 테스트]" if eff else "",f"평균 실행 시간 : {mean_t} 평균 메모리 사용량: {mean_m}",sep="")
 
 #조건에 맞는 숫자를 찾아 수정
 def change_num(regex,content,n=1):
@@ -89,27 +90,32 @@ def match_file_count(max_lv=3):
 def auto_update_readme():
     discrepancy_dict=match_file_count()
     if not discrepancy_dict:
-        print("업데이트할 파일이 없습니다.")
+        print("\n업데이트할 파일이 없습니다.")
         return False
     content=get_readme()
     if not content:
         print("Error: 파일을 읽어올 수 없음")
         return False
-    update_dict=dict()
+    update_dict=defaultdict(list) #lv:name
+    problem=[] #name, lv, ctime
     for lv,cnt in discrepancy_dict.items():
         files = dict()
         for f in listdir(f"./[Programmers] Lv{lv}"):
             files[f]=getctime(join(f"./[Programmers] Lv{lv}",f))
         new_files=sorted(files.items(),key=lambda x:x[1],reverse=True)[:cnt]
         for f,t in new_files:
-            update_dict[f]=[lv,t]
+            update_dict[lv].append(f)
+            if not problem or problem[-1]<t:
+                problem=[f,lv,t]
         content=change_num(rf"(?<=lv{lv}: )\d+(?=\n)", content,cnt)
-    problem=sorted(update_dict.items(),key=lambda x:x[1][1],reverse=True)[0]
-    url=f"(https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv{problem[1][0]}/{quote(problem[0])})"
+    url=f"(https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv{problem[1]}/{quote(problem[0])})"
     content=change_num(r"(?<=Total\*\*:  )\d+(?=\n)",content,sum(discrepancy_dict.values()))
-    content=re.sub("\[.+\]",f"[{problem[0]}]",content)
+    content=re.sub("\[.+\]",f"[{problem[0].rstrip('.py')}]",content)
     content=re.sub(r"\(.+\)",url,content)
-    update_problem=f"Solved problems: programmers [[{'], ['.join(k.rstrip('.py') for k in update_dict.keys())}]]"
+    update_problem=f"Solved problems: programmers"
+    for k,v in update_dict.items():
+        update_problem+=f" lv{k} [[{'], ['.join(f.rstrip('.py') for f in v)}]], "
+    update_problem=update_problem.rstrip(", ")
     print(update_problem)
     try:
         with open("./readme.md","w") as file:
@@ -121,5 +127,30 @@ def auto_update_readme():
         return False
     print(f"update complete for {sum(discrepancy_dict.values())} problem solutions!")
 
+#커밋 메세지 만들기
+def make_commit_message():
+    try:
+        with open("./message.txt","r") as file:
+            message = file.read()
+        with open("./update_problem.txt","r") as file:
+            update_problems = file.read()
+    except:
+        print("Error: 파일을 읽어올 수 없음")
+        return False
+    title,*body=message.split("\n")
+    commit_message="\\n".join([title+"\\n"]+[update_problems]+body)
+    try:
+        with open("./commit_message.txt","w") as file:
+            file.write(commit_message)
+    except:
+        print("Error: 파일을 저장하는 데 실패함")
+        return False
+
+
 if __name__=="__main__":
     auto_update_readme()
+    input()
+    make_commit_message()
+    input()
+    subprocess.run([".\\update_repository.bat"])
+    input()
