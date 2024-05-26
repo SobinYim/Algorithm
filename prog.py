@@ -149,8 +149,6 @@ def make_commit_message():
 
 if __name__=="__main__":
     auto_update_readme()
-    input()
     make_commit_message()
-    input()
     subprocess.run([".\\update_repository.bat"])
     input()
