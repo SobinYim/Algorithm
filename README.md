@@ -6,13 +6,13 @@
 ### 해결한 문제
 1.  **프로그래머스**
 -  lv1: 81
--  lv2: 57
+-  lv2: 58
 -  lv3: 8
 2.  **SWEA**
 -  d1: 19
 -  d2: 23
 -  d3: 84
 
-**Total**:  272
+**Total**:  273
 <br><br><br>
-**가장 최근에 해결한 문제**: [다리를 지나는 트럭](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv2/%EB%8B%A4%EB%A6%AC%EB%A5%BC%20%EC%A7%80%EB%82%98%EB%8A%94%20%ED%8A%B8%EB%9F%AD.py)
+**가장 최근에 해결한 문제**: [롤케이크 자르기](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv2/%EB%A1%A4%EC%BC%80%EC%9D%B4%ED%81%AC%20%EC%9E%90%EB%A5%B4%EA%B8%B0.py)

@@ -137,8 +137,12 @@ def make_commit_message():
     except:
         print("Error: 파일을 읽어올 수 없음")
         return False
-    title,*body=message.split("\n")
-    commit_message="\\n".join([title+"\\n"]+[update_problems]+body)
+    if message:
+        title,*body=message.split("\n")
+        commit_message="\n".join([title+"\n"]+[update_problems]+body)
+    else:
+        cnt=len(re.findall(r"\[(.*?)\]",update_problems))
+        commit_message=f"added {cnt} problem solutions\n\n{update_problems}"
     try:
         with open("./commit_message.txt","w") as file:
             file.write(commit_message)
