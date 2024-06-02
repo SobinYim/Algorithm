@@ -1,21 +1,22 @@
 from collections import Counter
-def solution(topping):
+def solution(topping): #롤케이크에 올려진 토핑들의 번호
     ans = 0
     c = Counter(topping)
-    left = set()
-    diff = len(c)
+    left = set() #철수가 현 위치에서 가질 수 있는 토핑 종류
+    diff = len(c) #철수와 동생의 토핑 종류 개수 차이
     for t in topping:
         c[t] -= 1
-        if t not in left:
+        if t not in left: #철수에게 없는 토핑이라면
             left.add(t)
             diff-=1
-        if not c[t]:
+        if not c[t]: #더이상 해당 토핑이 동생에게 없다면
             diff-=1
-        if not diff:
+        if not diff: #철수와 동생이 가진 토핑 종류의 수가 같다면
             ans += 1
-        elif diff<0:
+        elif diff<0: #차가 0 미만이라면 break
             break
     return ans
+
 
 '''
 평균 실행 시간 : 197.97 평균 메모리 사용량: 37.47
