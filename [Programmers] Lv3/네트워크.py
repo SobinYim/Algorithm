@@ -29,7 +29,7 @@ def solution(n, computers): #컴퓨터의 개수, 연결 정보
 위 코드에서는 for문으로 순회하며 이미 방문했는지 검사했는데 
 다른 풀이 보니까 visited에서 0의 위치를 찾아 방문할 수도 있다
 
-인상 깊었던 다른 사람에서 풀이:
+인상 깊었던 다른 사람의 풀이:
 def solution(n, computers):
     for i in range(n):
         searched = [c for c in computers if c[i]>0]
@@ -48,4 +48,3 @@ return len([(computers:=[c for c in computers if not c[i]]+[[sum(e) for e in zip
 ㅋㅋ
 좀 많이 더럽긴 한데 가능은 하다~ 정도
 '''
-
