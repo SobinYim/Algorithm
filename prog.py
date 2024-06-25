@@ -76,9 +76,11 @@ def get_latest_problem() -> None:
     readme = get_file("./README.md")
     if not readme:
         logger.error("파일이 없거나 읽어오는 데 실패하였습니다.")
-    prob = re.findall(r"\[(.+)\]", readme)
-    if prob:
-        logger.info(f"마지막으로 업데이트된 문제는 '{prob[0]}' 입니다.")
+        return None
+
+    problem = re.findall(r"\[(.+)\]", readme)
+    if problem:
+        logger.info(f"마지막으로 업데이트된 문제는 '{problem[0]}' 입니다.")
     else:
         logger.error("README에서 '가장 최근에 해결한 문제'를 찾을 수 없습니다.")
 
@@ -110,10 +112,13 @@ def match_file_count(max_lv: int = 3) -> Optional[Dict[int, int]]:
     :return: 불일치 dict(문제 레벨 : 불일치 수)
     """
     readme = get_file("./README.md")
-    tot_dir, tot_readme = 0, 0 #전체 디렉토리 내 파일의 수, 문서에 명세된 전체 파일의 수
-    discrepancy_dict = dict() #불일치 dict(문제 레벨 : 불일치 수)
     if not readme:
         logger.error("파일이 없거나 읽어오는 데 실패하였습니다.")
+        return None
+
+    tot_dir, tot_readme = 0, 0 #전체 디렉토리 내 파일의 수, 문서에 명세된 전체 파일의 수
+    discrepancy_dict = dict() #불일치 dict(문제 레벨 : 불일치 수)
+
     logger.info("[Programmers] 해결한 문제")
     for lv in range(1, max_lv + 1):
         dir_count = len(listdir(f"./[Programmers] Lv{lv}"))
@@ -125,6 +130,7 @@ def match_file_count(max_lv: int = 3) -> Optional[Dict[int, int]]:
         else:
             discrepancy_dict[lv] = abs(dir_count - readme_count)
             logger.info(f"[불일치] Lv{lv}: {dir_count}(dir) --{readme_count}(readme)--")
+
     logger.info(f"total: {tot_dir}{f'(dir) --{tot_readme}(readme)--' if tot_dir != tot_readme else ''}")
     return discrepancy_dict
 
@@ -136,11 +142,16 @@ def update_readme() -> None:
     discrepancy_dict = match_file_count()
     if not discrepancy_dict:
         logger.warning("업데이트할 파일이 없습니다.")
+        return None
+
     readme = get_file("./README.md")
     if not readme:
         logger.error("파일이 없거나 읽어오는 데 실패하였습니다.")
+        return None
+
     update_dict = defaultdict(list)  # lv:name
     problem = []  # name, lv, ctime
+
     for lv, cnt in discrepancy_dict.items():
         files = dict()
         for f in listdir(f"./[Programmers] Lv{lv}"):
@@ -151,14 +162,17 @@ def update_readme() -> None:
             if not problem or problem[-1] < t:
                 problem = [f, lv, t]
         readme = change_num(rf"(?<=lv{lv}: )\d+(?=\n)", readme, cnt)
+
     url = f"(https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv{problem[1]}/{quote(problem[0])})"
     readme = change_num(r"(?<=Total\*\*:  )\d+(?=\n)", readme, sum(discrepancy_dict.values()))
     readme = re.sub("\[.+\]", f"[{problem[0].rstrip('.py')}]", readme)
     readme = re.sub(r"\(.+\)", url, readme)
+
     update_problem = f"Solved problems: programmers"
     for k, v in update_dict.items():
         update_problem += f" lv{k} [[{'], ['.join(f.rstrip('.py') for f in v)}]], "
     update_problem = update_problem.rstrip(", ")
+
     write_file("./readme.md", readme)
     write_file("./update_problem.txt", update_problem)
     logger.info(f"update complete for {sum(discrepancy_dict.values())} problem solutions!")
@@ -170,6 +184,7 @@ def make_commit_message() -> None:
     """
     message = get_file("./message.txt")
     update_problems = get_file("./update_problem.txt")
+
     if not any([message, update_problems]):
         commit_message = ""
     elif message:
@@ -182,6 +197,7 @@ def make_commit_message() -> None:
             commit_message = f"added {update_problem}"
         else:
             commit_message = f"added {cnt} problem solutions\n\n{update_problems}"
+
     write_file("./commit_message.txt", commit_message)
 
 #레포지토리 업데이트

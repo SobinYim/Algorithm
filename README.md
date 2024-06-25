@@ -6,13 +6,13 @@
 ### 해결한 문제
 1.  **프로그래머스**
 -  lv1: 81
--  lv2: 60
--  lv3: 12
+-  lv2: 62
+-  lv3: 13
 2.  **SWEA**
 -  d1: 19
 -  d2: 23
 -  d3: 84
 
-**Total**:  279
+**Total**:  282
 <br><br><br>
-**가장 최근에 해결한 문제**: [택배상자](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv2/%ED%83%9D%EB%B0%B0%EC%83%81%EC%9E%90.py)
+**가장 최근에 해결한 문제**: [소수 찾기](https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv2/%EC%86%8C%EC%88%98%20%EC%B0%BE%EA%B8%B0.py)
