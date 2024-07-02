@@ -5,7 +5,8 @@ from os import listdir
 from os.path import join, getctime
 from urllib.parse import quote
 from collections import defaultdict
-from typing import Optional, Dict
+from typing import Optional
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -102,80 +103,95 @@ def change_num(regex: str, content: str, n: int = 1) -> Optional[str]:
         logger.warning("패턴에 매치되는 숫자가 없습니다.")
         return None
 
-#실제로 해결한 문제 수와 readme 문서 상 해결한 문제 수 매치
-def match_file_count(max_lv: int = 3) -> Optional[Dict[int, int]]:
-    """
-    max_lv까지 디렉토리와 README 문서의 일치 여부를 검사합니다.
-    일치하지 않는 문제 레벨과 불일치 문제 수를 반환합니다.
 
-    :param max_lv: 검사할 레벨 수
-    :return: 불일치 dict(문제 레벨 : 불일치 수)
-    """
-    readme = get_file("./README.md")
-    if not readme:
-        logger.error("파일이 없거나 읽어오는 데 실패하였습니다.")
-        return None
+class ReadmeUpdater:
+    def __init__(self):
+        self.readme = get_file("./README.md")
+        if not self.readme:
+            logger.error("파일이 없거나 읽어오는 데 실패하였습니다.")
+        self.match_file_count()
 
-    tot_dir, tot_readme = 0, 0 #전체 디렉토리 내 파일의 수, 문서에 명세된 전체 파일의 수
-    discrepancy_dict = dict() #불일치 dict(문제 레벨 : 불일치 수)
+    #실제로 해결한 문제 수와 readme 문서 상 해결한 문제 수 매치
+    def match_file_count(self, max_lv: int = 3) -> None:
+        """
+        max_lv까지 디렉토리와 README 문서의 일치 여부를 검사합니다.
+        일치하지 않는 문제 레벨과 불일치 문제 수를 반환합니다.
 
-    logger.info("[Programmers] 해결한 문제")
-    for lv in range(1, max_lv + 1):
-        dir_count = len(listdir(f"./[Programmers] Lv{lv}"))
-        readme_count = int(re.search(rf"(?<=lv{lv}: )\d+(?=\n)", readme).group())
-        tot_dir += dir_count
-        tot_readme += readme_count
-        if dir_count == readme_count:
-            logger.info(f"[ 일치 ] Lv{lv}: {dir_count}")
-        else:
-            discrepancy_dict[lv] = abs(dir_count - readme_count)
-            logger.info(f"[불일치] Lv{lv}: {dir_count}(dir) --{readme_count}(readme)--")
+        :param max_lv: 검사할 레벨 수
+        :return: 불일치 dict(문제 레벨 : 불일치 수)
+        """
+        tot_dir, tot_readme = 0, 0 #전체 디렉토리 내 파일의 수, 문서에 명세된 전체 파일의 수
+        self.discrepancy_dict = dict() #불일치 dict(문제 레벨 : 불일치 수)
 
-    logger.info(f"total: {tot_dir}{f'(dir) --{tot_readme}(readme)--' if tot_dir != tot_readme else ''}")
-    return discrepancy_dict
+        logger.info("[Programmers] 해결한 문제")
+        for lv in range(1, max_lv + 1):
+            dir_count = len(listdir(f"./[Programmers] Lv{lv}"))
+            readme_count = int(re.search(rf"(?<=lv{lv}: )\d+(?=\n)", self.readme).group())
+            tot_dir += dir_count
+            tot_readme += readme_count
+            if dir_count == readme_count:
+                logger.info(f"[ 일치 ] Lv{lv}: {dir_count}")
+            else:
+                self.discrepancy_dict[lv] = abs(dir_count - readme_count)
+                logger.info(f"[불일치] Lv{lv}: {dir_count}(dir) --{readme_count}(readme)--")
 
-#readme 일괄 업데이트
-def update_readme() -> None:
-    """
-    디렉토리와 README 문서를 비교하여 새롭게 추가된 부분을 README에 반영합니다.
-    """
-    discrepancy_dict = match_file_count()
-    if not discrepancy_dict:
-        logger.warning("업데이트할 파일이 없습니다.")
-        return None
+        logger.info(f"total: {tot_dir}{f'(dir) --{tot_readme}(readme)--' if tot_dir != tot_readme else ''}")
 
-    readme = get_file("./README.md")
-    if not readme:
-        logger.error("파일이 없거나 읽어오는 데 실패하였습니다.")
-        return None
+    #readme 수정
+    def modify_readme(self) -> None:
+        """
+        README 파일을 디렉토리와 일치시킵니다.
 
-    update_dict = defaultdict(list)  # lv:name
-    problem = []  # name, lv, ctime
+        Dependencies: match_file_count()
+        """
+        self.update_dict = defaultdict(list)  # lv:name
+        problem = []  # name, lv, ctime
 
-    for lv, cnt in discrepancy_dict.items():
-        files = dict()
-        for f in listdir(f"./[Programmers] Lv{lv}"):
-            files[f] = getctime(join(f"./[Programmers] Lv{lv}", f))
-        new_files = sorted(files.items(), key=lambda x: x[1], reverse=True)[:cnt]
-        for f, t in new_files:
-            update_dict[lv].append(f)
-            if not problem or problem[-1] < t:
-                problem = [f, lv, t]
-        readme = change_num(rf"(?<=lv{lv}: )\d+(?=\n)", readme, cnt)
+        for lv, cnt in self.discrepancy_dict.items():
+            files = dict()
+            for f in listdir(f"./[Programmers] Lv{lv}"):
+                files[f] = getctime(join(f"./[Programmers] Lv{lv}", f))
+            new_files = sorted(files.items(), key=lambda x: x[1], reverse=True)[:cnt]
+            for f, t in new_files:
+                self.update_dict[lv].append(f)
+                if not problem or problem[-1] < t:
+                    problem = [f, lv, t]
+            self.readme = change_num(rf"(?<=lv{lv}: )\d+(?=\n)", self.readme, cnt)
 
-    url = f"(https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv{problem[1]}/{quote(problem[0])})"
-    readme = change_num(r"(?<=Total\*\*:  )\d+(?=\n)", readme, sum(discrepancy_dict.values()))
-    readme = re.sub("\[.+\]", f"[{problem[0].rstrip('.py')}]", readme)
-    readme = re.sub(r"\(.+\)", url, readme)
+        url = f"(https://github.com/SobinYim/Algorithm/blob/main/%5BProgrammers%5D%20Lv{problem[1]}/{quote(problem[0])})"
+        self.readme = change_num(r"(?<=Total\*\*:  )\d+(?=\n)", self.readme, sum(self.discrepancy_dict.values()))
+        self.readme = re.sub("\[.+\]", f"[{problem[0].rstrip('.py')}]", self.readme)
+        self.readme = re.sub(r"\(.+\)", url, self.readme)
 
-    update_problem = f"Solved problems: programmers"
-    for k, v in update_dict.items():
-        update_problem += f" lv{k} [[{'], ['.join(f.rstrip('.py') for f in v)}]], "
-    update_problem = update_problem.rstrip(", ")
+    def make_update_problem(self) -> str:
+        """
+        양식에 맞추어 해결한 문제 목록을 작성합니다.
 
-    write_file("./readme.md", readme)
-    write_file("./update_problem.txt", update_problem)
-    logger.info(f"update complete for {sum(discrepancy_dict.values())} problem solutions!")
+        Dependencies: modify_readme()
+
+        :return: 해결한 문제 목록
+        """
+        update_problem = f"Solved problems: programmers"
+        for k, v in self.update_dict.items():
+            update_problem += f" lv{k} [[{'], ['.join(f.rstrip('.py') for f in v)}]], "
+        update_problem = update_problem.rstrip(", ")
+        return update_problem
+
+    #readme 일괄 업데이트
+    def update_readme(self) -> None:
+        """
+        디렉토리와 README 문서를 비교하여 새롭게 추가된 부분을 README에 반영합니다.
+
+        Dependencies: modify_readme()
+        """
+        if not self.discrepancy_dict:
+            logger.warning("업데이트할 파일이 없습니다.")
+            return None
+
+        self.modify_readme()
+
+        write_file("./readme.md", self.readme)
+        logger.info(f"update complete for {sum(self.discrepancy_dict.values())} problem solutions!")
 
 #커밋 메세지 생성
 def make_commit_message() -> None:
@@ -214,7 +230,9 @@ def run_bat() -> None:
 
 
 if __name__ == "__main__":
-    update_readme()
+    r = ReadmeUpdater()
+    r.update_readme()
+    write_file("./update_problem.txt", r.make_update_problem())
     make_commit_message()
     run_bat()
     input()
